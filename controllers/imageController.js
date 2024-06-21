@@ -3,7 +3,7 @@ const s3 = require('../config/awsConfig');
 
 // Upload multiple images
 exports.uploadImages = async (req, res) => {
-  const title = req.body.title || ''; // Default title to an empty string if not provided
+  const title = req.body.title || ''; // Default title empty string if not provided
 
   if (!req.files) {
     return res.status(400).json({ error: 'No files uploaded' });
