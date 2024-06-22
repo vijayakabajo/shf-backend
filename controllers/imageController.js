@@ -1,4 +1,5 @@
 const Image = require('../models/imageModel');
+const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const s3 = require('../config/awsConfig');
 
 // Upload multiple images
@@ -29,6 +30,7 @@ exports.getImages = async (req, res) => {
     const images = await Image.find();
     res.status(200).json(images);
   } catch (error) {
+    console.error('Error during fetching images:', error);
     res.status(500).json({ error: 'Server error during fetching images' });
   }
 };
@@ -51,13 +53,14 @@ exports.deleteImage = async (req, res) => {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: fileName,
     };
-    await s3.send(new PutObjectCommand(params));
+    await s3.send(new DeleteObjectCommand(params));
 
     // Delete the record from MongoDB
     await Image.findByIdAndDelete(id);
 
     res.status(200).json({ message: 'Image deleted successfully' });
   } catch (error) {
+    console.error('Error during deleting image:', error);
     res.status(500).json({ error: 'Server error during deleting image' });
   }
 };
