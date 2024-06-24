@@ -53,7 +53,7 @@ exports.deleteImage = async (req, res) => {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: fileName,
     };
-    await s3.send(new DeleteObjectCommand(params));
+    await s3.send(new DeleteObjectCommand(params));   //DeleteObjectCommand
 
     // Delete the record from MongoDB
     await Image.findByIdAndDelete(id);

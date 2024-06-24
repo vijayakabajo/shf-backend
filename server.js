@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-connectDB(); // Database Connectionf >> db.js
+connectDB(); // Database Connection >> db.js
 
 app.use('/api/images', imageRoutes);
 app.use('/api/auth', authRoutes);

@@ -9,7 +9,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  image: {
+  eventImageUrl: {
     type: String,
     required: true
   },
@@ -20,7 +20,7 @@ const eventSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: function() { return this.isPaid;  }  //returns true if the isPaid is true otherwise false
+    required: function() { return this.isPaid; }
   },
   slots: {
     type: Number,
@@ -28,18 +28,18 @@ const eventSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: true 
-  },
-  duration: {
-    type: Number,  
-    required: true 
-  },
-  date: {
-    type: Date,
     required: true
   },
-  time: {
-    type: Date,
+  date: {
+    type: String,
+    required: true
+  },
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
+    type: String,
     required: true
   }
 });
