@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  title: {
+  eventTitle: {
     type: String,
     required: true
   },
-  description: {
+  eventDescription: {
     type: String,
     required: true
   },
@@ -26,11 +26,11 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  location: {
+  eventLocation: {
     type: String,
     required: true
   },
-  date: {
+  eventDate: {
     type: String,
     required: true
   },
