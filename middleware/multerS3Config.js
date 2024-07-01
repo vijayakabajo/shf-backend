@@ -17,6 +17,7 @@ const upload = multer({
       cb(null, `${Date.now().toString()}-${file.originalname}`);
     },
   }),
+  
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif/;
     const extname = allowedTypes.test(file.mimetype);
