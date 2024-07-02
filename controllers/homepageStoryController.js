@@ -28,13 +28,13 @@ exports.updateHomepageStory = async (req, res) => {
 
         let storyContent = await HomepageStoryContent.findOne();
         if(storyContent){
-            storyContent = await homepageStoryContent.findByIdAndDelete(storyContent._id, updateData, {new: true})
+            storyContent = await HomepageStoryContent.findByIdAndUpdate(storyContent._id, updateData, {new: true})
         }else{
             storyContent = new HomepageStoryContent(updateData);
             await storyContent.save();
         }
         res.status(200).json(storyContent);
     }catch(error){
-        res.status().json({ error: 'Error updating Content', details: error.message});
+        res.status(500).json({ error: 'Error updating Content', details: error.message});
     }
 };
