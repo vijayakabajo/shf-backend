@@ -22,4 +22,4 @@ const aboutBody2Schema = mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('AboutBody1', aboutBody2Schema);
+module.exports = mongoose.model('AboutBody2', aboutBody2Schema);

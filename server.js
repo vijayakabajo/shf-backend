@@ -9,6 +9,8 @@ const imageRoutes = require('./routes/imageRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const donationRoutes = require('./routes/donationRoutes');
 const homepageStoryRoutes = require('./routes/homepageStoryRoutes');
+const aboutusRoutes1 = require('./routes/aboutBody1Routes')
+const aboutusRoutes2 = require('./routes/aboutBody2Routes')
 // const masonryConfigRoutes = require('./routes/masonryConfigRoutes');
  
 dotenv.config();
@@ -23,6 +25,8 @@ app.use('/api/images', imageRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/homepagestory', homepageStoryRoutes);
+app.use('/api/aboutus1', aboutusRoutes1);
+app.use('/api/aboutus2', aboutusRoutes2);
 // app.use('/api/masonryconfig', masonryConfigRoutes);
 
 const PORT = process.env.PORT || 5000;
