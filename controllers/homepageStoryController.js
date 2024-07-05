@@ -14,8 +14,19 @@ exports.getHomepageStory = async(req, res) => {
 
 exports.updateHomepageStory = async (req, res) => {
     try{
-        const {title, sub_text, description} = req.body;
-        const updateData = {title, sub_text, description, updated_at: Date.now()};
+        const {
+            title, 
+            sub_text,
+            description
+        } = req.body;
+        
+        const updateData = {
+            title: title ? title.toUpperCase() : undefined,
+            sub_text,
+            description,
+            updated_at: Date.now()
+        };
+
 
         if(req.files){
             if(req.files.image1){

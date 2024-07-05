@@ -8,8 +8,9 @@ const s3 = require('./config/awsConfig');
 const imageRoutes = require('./routes/imageRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const donationRoutes = require('./routes/donationRoutes');
-const homepageStoryRoutes = require('./routes/homepageStoryRoutes')
-
+const homepageStoryRoutes = require('./routes/homepageStoryRoutes');
+// const masonryConfigRoutes = require('./routes/masonryConfigRoutes');
+ 
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/images', imageRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/homepagestory', homepageStoryRoutes);
+// app.use('/api/masonryconfig', masonryConfigRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
