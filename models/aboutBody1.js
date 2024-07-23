@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 
 const aboutBody1Schema = mongoose.Schema({
-    images: [{
+    image1_url: {
         type: String,
-        required: true,
-    }],
-
+        required: true
+    },
+    image2_url: {
+        type: String,
+        required: true
+    },
     title:{
         type: String,
         required: true,

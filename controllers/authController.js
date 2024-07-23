@@ -1,39 +1,105 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const Admin = require('../models/admin');
-const bcrypt = require('bcrypt');
 
+// Admin login
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
 
-//Handle Login
-const login = async (req, res) => {
-  const { username, password } = req.body;   //destruct
-  const admin = await Admin.findOne({ username });  //find admin
-  if (!admin || !(await bcrypt.compare(password, admin.password))) {  //check if not admin or pw not matched
-    return res.status(401).json({ message: 'Invalid credentials' });
-  }
-  req.session.adminId = admin._id;            //if admin then store in session
-  res.json({ message: 'Login successful' });
-};
+  try {
+    // Find admin by username
+    const admin = await Admin.findOne({ username });
+    if (!admin) return res.status(404).json({ message: 'Admin Not Found' });
 
-// app.use(session({
-//   secret: process.env.SESSION_SECRET || 'jkbfoebvoirvoirnikewnin',
-//   resave: false,
-//   saveUninitialized: false,
-//   store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-//   cookie: { secure: false }
-// }));
+    // Check if password matches
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(400).send({ message: 'Invalid Credentials' });
 
-//Logout
-const logout = (req, res) => {
-  req.session.destroy();    //session destroy
-  res.json({ message: 'Logout successful' });
-};
+    // Create JWT token
+    const payload = { adminId: admin._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-//Auth Check
-const checkAuth = (req, res) => {
-  if (req.session.adminId) {     //found in sesssion?
-    res.json({ message: 'Authenticated' });
-  } else {
-    res.status(401).json({ message: 'Not authenticated' });
+    // Send token to client
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error', details: error.message });
   }
 };
 
-module.exports = { login, logout, checkAuth };
+// Forget Password
+exports.forgetPassword = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    // Find admin by username
+    const admin = await Admin.findOne({ username });
+    if (!admin) return res.status(404).send({ message: 'Admin Not Found' });
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    admin.resetPasswordToken = resetToken;
+    admin.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+    await admin.save();
+
+    // Configure email transporter
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    // Email options
+    const mailOptions = {
+      to: admin.username,
+      from: process.env.EMAIL_USER,
+      subject: 'Password Reset',
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your admin account.\n\n
+             Please click on the following link, or paste this into your browser to complete the process:\n\n
+             http://localhost:3000/reset/${resetToken}\n\n
+             If you did not request this, please ignore this email and your password will remain unchanged.\n`
+    };
+
+    // Send email
+    transporter.sendMail(mailOptions, (err, response) => {
+      if (err) return res.status(500).send({ message: 'Error sending email' });
+      res.status(200).send({ message: 'Password reset email sent' });
+    });
+  } catch (error) {
+    res.status(500).send({ message: 'Server Error', details: error.message });
+  }
+};
+
+// Reset Password
+exports.resetPassword = async (req, res) => {
+  const { password } = req.body;
+
+  try {
+    // Find admin by reset token and check if token is not expired
+    const admin = await Admin.findOne({
+      resetPasswordToken: req.params.token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+    if (!admin) return res.status(400).send({ message: 'Password reset token is invalid or has expired' });
+
+    // Update password and clear reset token fields
+    admin.password = password;
+    admin.resetPasswordToken = undefined;
+    admin.resetPasswordExpires = undefined;
+
+    await admin.save();
+
+    res.status(200).send({ message: 'Password Reset Successful' });
+  } catch (error) {
+    res.status(500).send({ message: 'Server Error', details: error.message });
+  }
+};
+
+// Logout
+exports.logout = async (req, res) => {
+  res.status(200).send({ message: 'Logout successful' });
+};

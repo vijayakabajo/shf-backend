@@ -1,14 +1,26 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const adminSchema = new mongoose.Schema({
-  username: { type: String, unique: true, required: true },
-  password: { type: String, required: true }
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 adminSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+  const admin = this;
+  if (admin.isModified('password')) {
+    const salt = await bcrypt.genSalt(10);
+    admin.password = await bcrypt.hash(admin.password, salt);
+  }
   next();
 });
 

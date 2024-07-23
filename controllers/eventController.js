@@ -2,46 +2,43 @@ const Event = require('../models/eventModel'); // Ensure this path is correct
 const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const s3 = require('../config/awsConfig'); // Ensure this path is correct
 
-
-//create event
+// Create event
 exports.createEvent = async (req, res) => {
-    const {
+  const {
+    eventTitle,
+    eventDescription,
+    isPaid,
+    amount,
+    slots,
+    eventLocation,
+    eventDate,
+    eventTime
+  } = req.body;
+
+  const eventImageUrl = req.file ? req.file.location : '';
+
+  try {
+    const newEvent = new Event({
       eventTitle,
       eventDescription,
+      eventImageUrl,
       isPaid,
       amount,
       slots,
       eventLocation,
       eventDate,
-      startTime,
-      endTime
-    } = req.body;
-  
-    const eventImageUrl = req.file ? req.file.location : '';
-  
-    try {
-      const newEvent = new Event({
-        eventTitle,
-        eventDescription,
-        eventImageUrl,
-        isPaid,
-        amount,
-        slots,
-        eventLocation,
-        eventDate,
-        startTime,
-        endTime
-      });
-  
-      await newEvent.save();
-      res.status(201).json(newEvent);
-    } catch (error) {
-      console.error('Error during event creation:', error);
-      res.status(500).json({ error: 'Server error during event creation' });
-    }
-  };
+      eventTime
+    });
 
-//get events
+    await newEvent.save();
+    res.status(201).json(newEvent);
+  } catch (error) {
+    console.error('Error during event creation:', error);
+    res.status(500).json({ error: 'Server error during event creation' });
+  }
+};
+
+// Get events
 exports.getEvents = async (req, res) => {
   try {
     const events = await Event.find();
@@ -51,8 +48,7 @@ exports.getEvents = async (req, res) => {
   }
 };
 
-
-//get event by id
+// Get event by id
 exports.getEventById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -66,8 +62,7 @@ exports.getEventById = async (req, res) => {
   }
 };
 
-
-//update an event
+// Update an event
 exports.updateEvent = async (req, res) => {
   const { id } = req.params;
   const {
@@ -78,8 +73,7 @@ exports.updateEvent = async (req, res) => {
     slots,
     eventLocation,
     eventDate,
-    startTime,
-    endTime
+    eventTime
   } = req.body;
 
   const eventImageUrl = req.file ? req.file.location : '';
@@ -107,8 +101,7 @@ exports.updateEvent = async (req, res) => {
     event.slots = slots || event.slots;
     event.eventLocation = eventLocation || event.eventLocation;
     event.eventDate = eventDate || event.eventDate;
-    event.startTime = startTime || event.startTime;
-    event.endTime = endTime || event.endTime;
+    event.eventTime = eventTime || event.eventTime;
 
     await event.save();
     res.status(200).json(event);
@@ -118,8 +111,7 @@ exports.updateEvent = async (req, res) => {
   }
 };
 
-
-//delete event
+// Delete event
 exports.deleteEvent = async (req, res) => {
   const { id } = req.params;
 
@@ -145,11 +137,12 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
-exports.deleteAll = async (req, res)=>{
-  try{
+// Delete all events
+exports.deleteAll = async (req, res) => {
+  try {
     await Event.deleteMany({});
-    res.status(200).json({message: 'All events have been deleted.' });
-  }catch(erroe){
-    res.ststus(500).json({ error: 'An error occurred while deleting events.' });
-  } 
+    res.status(200).json({ message: 'All events have been deleted.' });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while deleting events.' });
+  }
 };

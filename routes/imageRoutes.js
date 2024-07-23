@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/multerS3Config');
 const { uploadImages, getImages, deleteImage } = require('../controllers/imageController');
+const auth = require('../middleware/auth');
 
 
 
-router.post('/upload', upload.array('images', 10), uploadImages);
 router.get('/', getImages);
-router.delete('/:id', deleteImage);
+router.post('/upload', auth, upload.array('images', 15), uploadImages);
+router.delete('/:id', auth, deleteImage);
 
 module.exports = router;
