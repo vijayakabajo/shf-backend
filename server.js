@@ -13,6 +13,7 @@ const aboutusRoutes1 = require('./routes/aboutBody1Routes')
 const aboutusRoutes2 = require('./routes/aboutBody2Routes')
 const masonryConfigRoutes = require('./routes/masonryConfigRoutes');
 const authRoutes = require('./routes/authRoutes');
+const upcomingEventRoutes = require('./routes/upcomingEventRoutes');
  
 dotenv.config();
 
@@ -25,6 +26,7 @@ connectDB(); // Database Connection >> db.js
 
 app.use('/api/images', imageRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/upcomingevents', upcomingEventRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/homepagestory', homepageStoryRoutes);
 app.use('/api/aboutus1', aboutusRoutes1);
