@@ -7,7 +7,7 @@ const auth = require('../middleware/auth')
 // Route to create a new donation with image upload
 router.post('/', auth, upload.single('image'), donationController.createDonation);
 router.get('/', donationController.getAllDonations);
-router.get('/:id', auth, donationController.getDonationById);
+router.get('/:id', donationController.getDonationById);
 router.delete('/:id', auth, donationController.deleteDonation);
 router.put('/:id', auth, upload.single('image'), donationController.updateDonation);
 

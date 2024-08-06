@@ -9,11 +9,9 @@ const upcomingEventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  eventLocation: {
-    type: String
-  },
   eventDate: {
-    type: String
+    type: String,
+    required: true
   },
 });
 

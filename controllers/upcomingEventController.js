@@ -6,12 +6,12 @@ const s3 = require("../config/awsConfig");
 
 // Create event
 exports.createEvent = async (req, res) => {
-  const { eventTitle } = req.body;
+  const { eventTitle, eventDate } = req.body;
 
   const eventImageUrl = req.file ? req.file.location : "";
 
   try {
-    const newEvent = new UpcomingEvent({ eventTitle, eventImageUrl });
+    const newEvent = new UpcomingEvent({ eventTitle, eventDate, eventImageUrl });
     await newEvent.save();
     res.status(201).json(newEvent);
   } catch (error) {

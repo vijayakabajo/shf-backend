@@ -13,7 +13,7 @@ const aboutusRoutes1 = require('./routes/aboutBody1Routes')
 const aboutusRoutes2 = require('./routes/aboutBody2Routes')
 const masonryConfigRoutes = require('./routes/masonryConfigRoutes');
 const authRoutes = require('./routes/authRoutes');
-const upcomingEventRoutes = require('./routes/upcomingEventRoutes');
+const upcomingEventRoutes = require('./routes/upcomingEventRoutes'); 
  
 dotenv.config();
 

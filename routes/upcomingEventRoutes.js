@@ -5,8 +5,8 @@ const auth = require('../middleware/auth');
 const { getEvents, createEvent, deleteEvent, deleteAll } = require('../controllers/upcomingEventController');
 
 router.get('/', getEvents );
-router.post('/', upload.single('eventImage'), createEvent);
-router.delete('/all', deleteAll);
-router.delete('/:id', deleteEvent);
+router.post('/', auth, upload.single('eventImage'), createEvent);
+router.delete('/all', auth, deleteAll);
+router.delete('/:id', auth, deleteEvent);
 
 module.exports = router;
